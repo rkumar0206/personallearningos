@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: personallearningos
+  datasource:
+    url: jdbc:postgresql://localhost:5432/personallearningos
+    username: personallearningos
+    password: 12345#
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000        # 30 seconds
+      max-lifetime: 1800000      # 30 minutes
+      connection-timeout: 30000  # 30 seconds
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    default-schema: public
+    drop-first: false
+server:
+  port: 2266
+
+jwt:
+  properties:
+    enabled: true
+    secret: "9xA4vK2mZ8bQ5wP1rT7yC3eX6nM0vK2mZ8bQ5wP1rT7yC3eX6nM0" # Use a secure 256-bit key
+    issuer: "learningos-auth-service"
+    accessTokenExpirationMillis: 900000   # 15 mins
+    refreshTokenExpirationMillis: 604800000 # 7 days
+    publicEndpoints:
+      - "/v3/api-docs/**"
+      - "/api/v1/auth/**"
+    roleMappings:
+      - pattern: "/api/v1/admin/**"
+        roles: ["ADMIN"]
+      - pattern: "/api/v1/learning/**"
+        roles: ["LEARNER", "ADMIN"]
