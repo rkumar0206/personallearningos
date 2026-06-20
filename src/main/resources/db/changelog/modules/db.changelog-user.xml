@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db/changelog/users/001-create-users-table/001-create-users-table.xml"/>
-    <include file="db/changelog/users/001-create-refresh-token-table/001-create-refresh-token-table.xml"/>
-    <include file="db/changelog/users/001-create-password-reset-token-table/001-create-password-reset-token-table.xml"/>
+    <include file="/db/changelog/tables/users/001-create-users-table/001-create-users-table.xml"/>
+    <include file="/db/changelog/tables/users/001-create-refresh-token-table/001-create-refresh-token-table.xml"/>
+    <include file="/db/changelog/tables/users/001-create-password-reset-token-table/001-create-password-reset-token-table.xml"/>
 
 </databaseChangeLog>

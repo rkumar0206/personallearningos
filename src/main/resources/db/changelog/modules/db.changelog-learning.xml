@@ -5,4 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <include file="db/changelog/tables/learning/001-create-learning-path-table/001-create-learning-path-table.xml"/>
+    <include file="db/changelog/tables/learning/001-create-learning-module-table/001-create-learning-module-table.xml"/>
+    <include file="db/changelog/tables/learning/001-create-learning-topic-table/001-create-learning-topic-table.xml"/>
+    <include
+            file="db/changelog/tables/learning/001-create-learning-resource-table/001-create-learning-resource-table.xml"/>
+
 </databaseChangeLog>

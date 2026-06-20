@@ -7,6 +7,5 @@
 
     <include file="db/changelog/modules/db.changelog-user.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/modules/db.changelog-learning.xml" relativeToChangelogFile="false"/>
-    <include file="db/changelog/modules/db.changelog-content.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
