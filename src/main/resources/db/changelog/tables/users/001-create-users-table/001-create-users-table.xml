@@ -25,6 +25,10 @@
             <column name="updated_at" type="timestamp">
                 <constraints nullable="false"/>
             </column>
+            <column name="enabled" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="verification_token" type="varchar(255)"/>
         </createTable>
 
         <addAutoIncrement tableName="users" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>

@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
      * Optional utility if you want to allow users to sign in using either their username OR their email.
      */
     Optional<UserEntity> findByUsernameOrEmail(String username, String email);
+
+    Optional<UserEntity> findByVerificationToken(String token);
 }

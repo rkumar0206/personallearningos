@@ -16,16 +16,16 @@ java {
 repositories {
 	mavenCentral()
 	mavenLocal()
-//	maven {
-//		name = "GitHubPackages"
-//		// Point to the repository hosting your package group
-//		url = uri("https://maven.pkg.github.com/rkumar0206/jwt-security")
-//		credentials {
-//			// Uses the same Mac env variables you set up during publishing
-//			username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user")
-//			password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-//		}
-//	}
+	maven {
+		name = "GitHubPackages"
+		// Point to the repository hosting your package group
+		url = uri("https://maven.pkg.github.com/rkumar0206/jwt-security")
+		credentials {
+			// Uses the same Mac env variables you set up during publishing
+			username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user")
+			password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+		}
+	}
 }
 
 ext {
@@ -45,6 +45,7 @@ dependencies {
 	runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	//Lombok-MapStruct Binding
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
@@ -54,8 +55,7 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	// custom jars
-	implementation 'com.rksdev:jwt-security:1.0.0'
-	//implementation 'com.rksdev:jwt-security:1.0.0'
+	implementation 'com.rksdev:jwt-security:1.0.1'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'

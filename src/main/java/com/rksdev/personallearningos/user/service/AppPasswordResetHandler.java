@@ -1,5 +1,7 @@
 package com.rksdev.personallearningos.user.service;
 
+import com.rksdev.personallearningos.shared.service.EmailService;
+import com.rksdev.personallearningos.shared.util.AppUtils;
 import com.rksdev.personallearningos.user.model.PasswordResetTokenEntity;
 import com.rksdev.personallearningos.user.model.UserEntity;
 import com.rksdev.personallearningos.user.repository.PasswordResetTokenRepository;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class AppPasswordResetHandler implements PluggablePasswordResetHandler {
 
     private final UserRepository userRepository;
+    private final EmailService emailService;
     private final PasswordResetTokenRepository resetTokenRepository;
 
     @Override
@@ -43,11 +46,9 @@ public class AppPasswordResetHandler implements PluggablePasswordResetHandler {
 
             resetTokenRepository.save(resetEntity);
 
-            //todo: write email service to send the email
-
-            // Mocking email dispatch out to console. Swap with EmailService down the line.
-            System.out.printf("[EMAIL DISPATCH] To: %s | Subject: Reset Your Password%n", user.getEmail());
-            System.out.printf("[EMAIL BODY] Use token to complete reset: %s%n", secureToken);
+            // Dispatch async security link
+            String resetLink = AppUtils.getBaseUrl() +  "/api/v1/auth/reset-password-form?token="+ secureToken;
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
         } else {
             // Log missing requests internally for debugging; endpoint still returns safe generic messages to prevent user tracing
             System.out.printf("[WARN] Password reset requested for non-existent account: %s%n", email);
