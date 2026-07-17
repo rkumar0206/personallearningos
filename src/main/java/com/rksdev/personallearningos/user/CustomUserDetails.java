@@ -11,16 +11,12 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails, IdentifiableUser {
 
-    private final Long userId; // Stores our numeric ID
-    private final String username;
-    private final String password;
+    private final UserEntity user;
     private final Collection<? extends GrantedAuthority> authorities;
 
     // Constructor accepts the numeric ID from the database entity
     public CustomUserDetails(UserEntity user) {
-        this.userId = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
+        this.user = user;
         this.authorities = user.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -28,12 +24,12 @@ public class CustomUserDetails implements UserDetails, IdentifiableUser {
 
     @Override
     public Long getUserId() {
-        return this.userId; // Satisfies IdentifiableUser for the library
+        return this.user.getId(); // Satisfies IdentifiableUser for the library
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.user.getUsername();
     }
 
     @Override
@@ -43,7 +39,7 @@ public class CustomUserDetails implements UserDetails, IdentifiableUser {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return this.user.getPassword();
     }
 
     @Override
@@ -63,6 +59,6 @@ public class CustomUserDetails implements UserDetails, IdentifiableUser {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.user.isEnabled();
     }
 }

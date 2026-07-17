@@ -44,6 +44,7 @@ jwt:
     issuer: "learningos-auth-service"
     accessTokenExpirationMillis: 900000   # 15 mins
     refreshTokenExpirationMillis: 604800000 # 7 days
+    secureCookies: false
     publicEndpoints:
       - "/v3/api-docs/**"
       - "/api/v1/auth/**"

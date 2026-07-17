@@ -1,4 +1,4 @@
-package com.rksdev.personallearningos.user;
+package com.rksdev.personallearningos.user.controller;
 
 import com.rksdev.personallearningos.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

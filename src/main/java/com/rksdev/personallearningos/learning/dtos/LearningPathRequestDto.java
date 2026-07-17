@@ -21,7 +21,4 @@ public class LearningPathRequestDto {
 
     @NotNull(message = "Status is required")
     private PathStatus status;
-
-    @NotNull(message = "User ID is required")
-    private Long userId;
 }

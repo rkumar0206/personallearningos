@@ -31,7 +31,7 @@ public class LearningPathService {
 
         LearningPathEntity entity = learningPathMapper.toEntity(pathData);
 
-        if (isDuplicateExists(entity.getTitle(), entity.getUser().getId())) {
+        if (isDuplicateExists(entity.getTitle(), userId)) {
             throw new DuplicateResourceInDbException("Learning path already exists");
         }
 
@@ -62,7 +62,7 @@ public class LearningPathService {
         LearningPathEntity existingPath = learningPathRepository.findByIdAndUserId(pathId, userId)
                 .orElseThrow(() -> new ResourceNotFoundInDbException("Learning Path not found"));
 
-        if (!existingPath.getTitle().equals(updatedData.getTitle()) && isDuplicateExists(updatedData.getTitle(), existingPath.getUser().getId())) {
+        if (!existingPath.getTitle().equals(updatedData.getTitle()) && isDuplicateExists(updatedData.getTitle(), userId)) {
             throw new DuplicateResourceInDbException("Learning path already exists");
         }
 

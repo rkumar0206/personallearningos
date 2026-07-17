@@ -12,7 +12,6 @@ import java.util.List;
 public interface LearningPathMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user.id", source = "userId")
     @Mapping(target = "modules", ignore = true)
     LearningPathEntity toEntity(LearningPathRequestDto dto);
 
