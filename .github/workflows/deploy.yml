@@ -4,6 +4,11 @@ on:
   push:
     branches: [ "main" ]
 
+# 🔑 Grants write permissions to GHCR
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/personallearningos-backend
