@@ -57,6 +57,14 @@ dependencies {
 	// custom jars
 	implementation 'com.rksdev:jwt-security:1.0.4'
 
+// 1. Import Testcontainers BOM
+	testImplementation platform('org.testcontainers:testcontainers-bom:1.20.4')
+
+	// 2. Testcontainers dependencies (versions managed by BOM)
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-liquibase-test'
