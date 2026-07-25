@@ -115,6 +115,7 @@ jobs:
           script: |
             cd /home/deployer/app
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            export APP_VERSION="${{ steps.get_version.outputs.APP_VERSION }}"
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f

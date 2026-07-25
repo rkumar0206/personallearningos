@@ -9,7 +9,7 @@ services:
         GITHUB_ACTOR: ${GITHUB_ACTOR}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
     platform: linux/amd64
-    image: ghcr.io/rkumar0206/personallearningos-backend:v1.0.0
+    image: ghcr.io/rkumar0206/personallearningos-backend:${APP_VERSION:-latest}
     container_name: personallearningos-backend
     restart: unless-stopped
     ports:
