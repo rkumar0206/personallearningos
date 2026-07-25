@@ -32,7 +32,7 @@ services:
       personallearningos-db:
         condition: service_healthy
     networks:
-      - personallearningos-network
+      - app-net
 
   personallearningos-db:
     image: postgres:16-alpine
@@ -55,12 +55,11 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - personallearningos-network
+      - app-net
 
 networks:
-  personallearningos-network:
-    driver: bridge
-    name: personallearningos-network
+  app-net:
+    external: true
 
 volumes:
   postgres_data:
