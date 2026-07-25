@@ -30,6 +30,7 @@ public class UserEntity extends Auditable {
     private String password;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean enabled = false; // Users must confirm email to log in
 
     @Column(name = "verification_token")

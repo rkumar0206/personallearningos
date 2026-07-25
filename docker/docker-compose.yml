@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        GITHUB_ACTOR: ${GITHUB_ACTOR}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    platform: linux/amd64
+    image: ghcr.io/rkumar0206/personallearningos-backend:v1.0.0
+    container_name: personallearningos-backend
+    restart: unless-stopped
+    ports:
+      - "2266:2266"
+    env_file:
+      - .env
+    environment:
+      # Database connection
+      SPRING_DATASOURCE_URL: jdbc:postgresql://personallearningos-db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      # App configs
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TOKEN_EXPIRATION: ${JWT_ACCESS_TOKEN_EXPIRATION}
+      JWT_ACCESS_REFRESH_EXPIRATION: ${JWT_ACCESS_REFRESH_EXPIRATION}
+      spring.profiles.active: ${ACTIVE_PROFILE}
+    depends_on:
+      personallearningos-db:
+        condition: service_healthy
+    networks:
+      - personallearningos-network
+
+  personallearningos-db:
+    image: postgres:16-alpine
+    container_name: personallearningos-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - personallearningos-network
+
+networks:
+  personallearningos-network:
+    driver: bridge
+    name: personallearningos-network
+
+volumes:
+  postgres_data:

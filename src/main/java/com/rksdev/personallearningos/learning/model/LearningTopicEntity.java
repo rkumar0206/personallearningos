@@ -31,6 +31,7 @@ public class LearningTopicEntity extends Auditable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private TopicStatus status = TopicStatus.NOT_STARTED;
 
     @Column(name = "display_order", nullable = false)

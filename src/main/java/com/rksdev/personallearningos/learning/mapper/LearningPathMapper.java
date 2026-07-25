@@ -13,6 +13,7 @@ public interface LearningPathMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "modules", ignore = true)
+    @Mapping(target = "user", ignore = true)
     LearningPathEntity toEntity(LearningPathRequestDto dto);
 
     @Mapping(target = "userId", source = "user.id")

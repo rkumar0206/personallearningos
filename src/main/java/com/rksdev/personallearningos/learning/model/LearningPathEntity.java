@@ -30,6 +30,7 @@ public class LearningPathEntity extends Auditable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private PathStatus status = PathStatus.PLANNED;
 
     @ManyToOne(fetch = FetchType.LAZY)
