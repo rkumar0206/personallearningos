@@ -10,5 +10,5 @@
     <include file="db/changelog/tables/learning/001-create-learning-topic-table/001-create-learning-topic-table.xml"/>
     <include
             file="db/changelog/tables/learning/001-create-learning-resource-table/001-create-learning-resource-table.xml"/>
-
+    <include file="db/changelog/tables/learning/001-create-learning-resource-table/002-add-url-description-column.xml"/>
 </databaseChangeLog>

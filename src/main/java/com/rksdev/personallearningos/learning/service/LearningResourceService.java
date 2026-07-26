@@ -54,9 +54,7 @@ public class LearningResourceService {
         LearningResourceEntity existingResource = learningResourceRepository.findByIdAndUserId(resourceId, userId)
                 .orElseThrow(() -> new ResourceNotFoundInDbException("Learning Resource not found or unauthorized"));
 
-        existingResource.setType(updatedData.getType());
-        existingResource.setContent(updatedData.getContent());
-
+        learningResourceMapper.updateEntityFromDto(updatedData, existingResource);
         return learningResourceMapper.toResponseDto(learningResourceRepository.saveAndFlush(existingResource));
     }
 

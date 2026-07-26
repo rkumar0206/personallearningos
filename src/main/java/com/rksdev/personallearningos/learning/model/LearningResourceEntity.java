@@ -27,6 +27,9 @@ public class LearningResourceEntity extends Auditable {
     @Column(name = "type", nullable = false)
     private ResourceType type;
 
+    @Column(name = "url_description", nullable = false, columnDefinition = "TEXT")
+    private String urlDescription;
+
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 }

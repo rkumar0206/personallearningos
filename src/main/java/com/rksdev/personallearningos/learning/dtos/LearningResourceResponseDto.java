@@ -24,6 +24,8 @@ public class LearningResourceResponseDto {
     @NotNull(message = "Resource type cannot be null")
     private ResourceType type;
 
+    private String urlDescription;
+
     @NotBlank(message = "Content cannot be blank")
     private String content;
 

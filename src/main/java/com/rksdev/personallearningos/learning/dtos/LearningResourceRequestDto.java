@@ -20,6 +20,8 @@ public class LearningResourceRequestDto {
     @NotNull(message = "Resource type is required")
     private ResourceType type;
 
+    private String urlDescription;
+
     @NotBlank(message = "Content is required and cannot be blank")
     private String content;
 }
