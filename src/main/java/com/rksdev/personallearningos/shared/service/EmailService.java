@@ -1,9 +1,11 @@
 package com.rksdev.personallearningos.shared.service;
 
+import com.rksdev.personallearningos.import_export.dtos.ImportSummary;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -96,6 +98,59 @@ public class EmailService {
             // Because this is on a background thread, exceptions cannot be thrown back to the HTTP controller.
             // We must log them carefully to monitor for SMTP failures.
             log.error("❌ Failed to send email to {}. Error: {}", to, e.getMessage(), e);
+        }
+    }
+
+    public void sendDataExportEmail(String toEmail, byte[] jsonBytes) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("Your Data Export is Ready");
+            helper.setText("Hello,\n\nPlease find attached your complete learning data backup file in JSON format.\n\nBest regards,\nLearning App Team");
+
+            helper.addAttachment("learning_data_backup.json", new ByteArrayResource(jsonBytes));
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send export email", e);
+        }
+    }
+
+    public void sendImportSummaryEmail(String toEmail, ImportSummary summary) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("Your Data Import Has Completed");
+
+            String body = String.format("""
+                Hello,
+
+                Your data import process has finished successfully!
+
+                Import Summary:
+                • Paths Created: %d
+                • Modules Created: %d
+                • Topics Created: %d
+                • Resources Created: %d
+                • Resources Skipped (Duplicates): %d
+
+                Happy Learning!
+                """,
+                    summary.pathsCreated(),
+                    summary.modulesCreated(),
+                    summary.topicsCreated(),
+                    summary.resourcesCreated(),
+                    summary.resourcesSkipped()
+            );
+
+            helper.setText(body);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send import summary email", e);
         }
     }
 }
