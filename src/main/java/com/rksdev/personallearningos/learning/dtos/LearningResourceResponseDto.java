@@ -29,6 +29,9 @@ public class LearningResourceResponseDto {
     @NotBlank(message = "Content cannot be blank")
     private String content;
 
+    @NotBlank(message = "Title cannot be null")
+    private String title;
+
     @NotNull(message = "Created at timestamp cannot be null")
     private Instant createdAt;
 

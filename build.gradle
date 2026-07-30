@@ -57,7 +57,9 @@ dependencies {
 	// custom jars
 	implementation 'com.rksdev:jwt-security:1.0.4'
 
-// 1. Import Testcontainers BOM
+	implementation 'org.jsoup:jsoup:1.17.2'
+
+	// 1. Import Testcontainers BOM
 	testImplementation platform('org.testcontainers:testcontainers-bom:1.20.4')
 
 	// 2. Testcontainers dependencies (versions managed by BOM)
