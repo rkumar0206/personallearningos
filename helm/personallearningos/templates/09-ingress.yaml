@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plo-ingress
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    app: plo
+    component: ingress
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.annotations.ingressClassName }}
+    nginx.ingress.kubernetes.io/ssl-redirect: {{ .Values.ingress.annotations.nginxSSLRedirect }}
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ .Values.ingress.annotations.nginxProxyBodySize }}
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host | default "personallearningos.rksdev.tech" }}
+      secretName: {{ .Values.ingress.tls.secretName | default "plo-tls-cert" }}
+  rules:
+    - host: {{ .Values.ingress.host | default "personallearningos.rksdev.tech" }}
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: plo-backend-service
+                port:
+                  number: {{ .Values.app.service.port | default 2266 }}
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: plo-frontend-service
+#                port:
+#                  number: {{ .Values.frontend.service.port | default 80 }}

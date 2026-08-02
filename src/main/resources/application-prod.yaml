@@ -2,9 +2,9 @@ spring:
   application:
     name: personallearningos
   datasource:
-    url: jdbc:postgresql://localhost:5432/personallearningos
-    username: personallearningos
-    password: ${DB_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/personallearningos}
+    username: ${POSTGRES_USER:personallearningos}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       minimum-idle: 5
@@ -20,34 +20,35 @@ spring:
     default-schema: public
     drop-first: false
   mail:
-    host: smtp.gmail.com
-    port: 587
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
     username: ${SMTP_USERNAME}
     password: ${SMTP_PASSWORD}
     properties:
       mail:
         smtp:
-          auth: true
+          auth: ${SMTP_AUTH:true}
           starttls:
-            enable: true
+            enable: ${SMTP_STARTTLS_ENABLE:true}
             required: true
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
 server:
-  port: 2266
+  port: ${SERVER_PORT:2266}
 
 jwt:
   properties:
-    enabled: true
+    enabled: ${JWT_ENABLED}
     secret: ${JWT_SECRET} # Use a secure 256-bit key
-    issuer: "learningos-auth-service"
+    issuer: ${JWT_ISSUER}
     accessTokenExpirationMillis: ${JWT_ACCESS_TOKEN_EXPIRATION:900000}   # 15 mins
     refreshTokenExpirationMillis: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000} # 7 days
     secureCookies: true
     publicEndpoints:
       - "/v3/api-docs/**"
       - "/api/v1/auth/**"
+      - "/actuator/**"
     roleMappings:
       - pattern: "/api/v1/admin/**"
         roles: ["ADMIN"]

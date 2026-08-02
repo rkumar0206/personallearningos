@@ -91,31 +91,42 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ------------------------------------------------------------------------
-      # 8. Copy Deployment Files to Server
+      # 8. Set up Kubernetes Context (Kubeconfig)
       # ------------------------------------------------------------------------
-      - name: Copy docker-compose.yml to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker/docker-compose.yml"
-          target: "/home/deployer/app/personallearningos/backend/"
-          strip_components: 1
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
 
       # ------------------------------------------------------------------------
-      # 9. Deploy on Server via SSH
+      # 9. Set up Helm
       # ------------------------------------------------------------------------
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/deployer/app/personallearningos/backend
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            export APP_VERSION="${{ steps.get_version.outputs.APP_VERSION }}"
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker image prune -f
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      # ------------------------------------------------------------------------
+      # 10. Create or Update K8s Secrets (Idempotent)
+      # ------------------------------------------------------------------------
+      - name: Create or Update App Secrets
+        run: |
+          kubectl create namespace plo-prod --dry-run=client -o yaml | kubectl apply -f -
+          
+          kubectl create secret generic plo-secret \
+            --namespace=plo-prod \
+            --from-literal=POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
+            --from-literal=POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
+            --from-literal=JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            --from-literal=SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}" \
+            --from-literal=SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      # ------------------------------------------------------------------------
+      # 11. Deploy via Helm
+      # ------------------------------------------------------------------------
+      - name: Deploy via Helm
+        run: |
+          helm upgrade --install plo-backend ./helm-chart \
+            --namespace plo-prod \
+            --app-version "${{ steps.get_version.outputs.APP_VERSION }}" \
+            --set app.image.tag="${{ steps.get_version.outputs.APP_VERSION }}"

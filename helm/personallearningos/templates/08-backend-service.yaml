@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plo-backend-service
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    app: plo
+    component: plo-backend
+spec:
+  type: {{ .Values.app.service.type | default "ClusterIP" }}
+  selector:
+    app: plo
+    component: plo-backend
+  ports:
+    - name: http
+      port: {{ .Values.app.service.port | default 2266 }}
+      targetPort: {{ .Values.app.service.targetPort | default 2266 }}
+      protocol: TCP

@@ -1,0 +1,110 @@
+# General Metadata
+namespace: plo-prod
+
+# -----------------------------------------------------------------------------
+# Spring Boot Application Configuration
+# -----------------------------------------------------------------------------
+app:
+  name: backend
+  replicaCount: 1
+
+  jwt:
+    enabled: true
+    issuer: "plo-auth-service"
+    accessTokenExpirationMillis: 900000
+    refreshTokenExpirationMillis: 604800000
+
+  image:
+    repository: ghcr.io/rkumar0206/personallearningos-backend
+    tag: "" # Overridden dynamically in GitHub Actions
+    pullPolicy: IfNotPresent
+    containerPort: 2266
+
+  # Name of the pre-existing Kubernetes Secret on the cluster
+  existingSecret: plo-secrets
+
+  # Non-sensitive Environment Variables
+  env:
+    SPRING_PROFILES_ACTIVE: prod
+
+  service:
+    type: ClusterIP
+    port: 2266
+    targetPort: 2266
+
+  # Spring Boot Actuator Health Probes
+  probes:
+    liveness:
+      path: /actuator/health/liveness
+      initialDelaySeconds: 30
+      periodSeconds: 15
+    readiness:
+      path: /actuator/health/readiness
+      initialDelaySeconds: 20
+      periodSeconds: 10
+
+  # Resource Allocation
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+# -----------------------------------------------------------------------------
+# Database Configuration
+# -----------------------------------------------------------------------------
+db:
+  enabled: true
+  name: plo-postgres
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: IfNotPresent
+    containerPort: 5432
+
+  existingSecret: plo-secrets
+
+  # Environment variables for PostgreSQL startup
+  # (DB password and user secrets should be referenced from existingSecret)
+  env:
+    POSTGRES_DB: personallearningos
+
+  service:
+    name: plo-db-service
+    type: None
+    port: 5432
+    targetPort: 5432
+
+  # Persistent Volume Claim Configuration
+  persistence:
+    enabled: true
+    storageClass: "" # Uses default cluster StorageClass if empty
+    accessMode: ReadWriteOnce
+    size: 5Gi
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# -----------------------------------------------------------------------------
+# Ingress Configuration (Nginx / Cert-Manager)
+# -----------------------------------------------------------------------------
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingressClassName: nginx
+    nginxSSLRedirect: true
+    nginxProxyBodySize: "10M"
+  host: personallearningos.rksdev.tech
+  tls:
+    enabled: true
+    secretName: plo-tls-secret
