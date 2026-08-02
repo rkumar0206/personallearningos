@@ -11,8 +11,8 @@ app:
   jwt:
     enabled: true
     issuer: "plo-auth-service"
-    accessTokenExpirationMillis: 900000
-    refreshTokenExpirationMillis: 604800000
+    accessTokenExpirationMillis: "900000"
+    refreshTokenExpirationMillis: "604800000"
 
   image:
     repository: ghcr.io/rkumar0206/personallearningos-backend
@@ -102,9 +102,8 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    ingressClassName: nginx
-    nginxSSLRedirect: "true"
-    nginxProxyBodySize: "10M"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
   host: personallearningos.rksdev.tech
   tls:
     enabled: true

@@ -11,6 +11,7 @@ metadata:
       {{ $key }}: {{ $value | quote }}
       {{- end }}
 spec:
+  ingressClassName: {{ .Values.ingress.className | default "nginx" }}
   tls:
     - hosts:
         - {{ .Values.ingress.host | default "personallearningos.rksdev.tech" }}
