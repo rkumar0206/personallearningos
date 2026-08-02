@@ -83,7 +83,7 @@ db:
   # Persistent Volume Claim Configuration
   persistence:
     enabled: true
-    storageClass: "" # Uses default cluster StorageClass if empty
+    storageClass: "local-path"
     accessMode: ReadWriteOnce
     size: 5Gi
 
