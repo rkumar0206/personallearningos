@@ -102,7 +102,7 @@ ingress:
   className: nginx
   annotations:
     ingressClassName: nginx
-    nginxSSLRedirect: true
+    nginxSSLRedirect: "true"
     nginxProxyBodySize: "10M"
   host: personallearningos.rksdev.tech
   tls:
