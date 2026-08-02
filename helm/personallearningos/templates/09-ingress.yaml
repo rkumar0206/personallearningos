@@ -7,9 +7,9 @@ metadata:
     app: plo
     component: ingress
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.annotations.ingressClassName }}
-    nginx.ingress.kubernetes.io/ssl-redirect: {{ .Values.ingress.annotations.nginxSSLRedirect }}
-    nginx.ingress.kubernetes.io/proxy-body-size: {{ .Values.ingress.annotations.nginxProxyBodySize }}
+      {{- range $key, $value := .Values.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
 spec:
   tls:
     - hosts:
