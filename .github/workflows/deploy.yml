@@ -128,5 +128,4 @@ jobs:
         run: |
           helm upgrade --install plo-backend ./helm-chart \
             --namespace plo-prod \
-            --app-version "${{ steps.get_version.outputs.APP_VERSION }}" \
             --set app.image.tag="${{ steps.get_version.outputs.APP_VERSION }}"
