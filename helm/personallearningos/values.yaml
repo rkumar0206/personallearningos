@@ -75,7 +75,8 @@ db:
 
   service:
     name: plo-db-service
-    type: None
+    type: ClusterIP
+    clusterIP: "None"
     port: 5432
     targetPort: 5432
 
