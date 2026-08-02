@@ -26,10 +26,3 @@ spec:
                 name: plo-backend-service
                 port:
                   number: {{ .Values.app.service.port | default 2266 }}
-#          - path: /
-#            pathType: Prefix
-#            backend:
-#              service:
-#                name: plo-frontend-service
-#                port:
-#                  number: {{ .Values.frontend.service.port | default 80 }}
