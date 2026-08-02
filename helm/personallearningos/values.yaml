@@ -21,7 +21,7 @@ app:
     containerPort: 2266
 
   # Name of the pre-existing Kubernetes Secret on the cluster
-  existingSecret: plo-secrets
+  existingSecret: plo-secret
 
   # Non-sensitive Environment Variables
   env:
@@ -66,7 +66,7 @@ db:
     pullPolicy: IfNotPresent
     containerPort: 5432
 
-  existingSecret: plo-secrets
+  existingSecret: plo-secret
 
   # Environment variables for PostgreSQL startup
   # (DB password and user secrets should be referenced from existingSecret)
