@@ -126,6 +126,6 @@ jobs:
       # ------------------------------------------------------------------------
       - name: Deploy via Helm
         run: |
-          helm upgrade --install plo-backend ./helm-chart \
+          helm upgrade --install plo-backend ./helm/personallearningos \
             --namespace plo-prod \
             --set app.image.tag="${{ steps.get_version.outputs.APP_VERSION }}"
