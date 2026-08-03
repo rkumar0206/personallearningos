@@ -14,7 +14,7 @@ public interface LearningTopicRepository extends JpaRepository<LearningTopicEnti
     @Query("SELECT t FROM LearningTopicEntity t WHERE t.id = :id AND t.module.path.user.id = :userId")
     Optional<LearningTopicEntity> findByIdAndUserId(Long id, Long userId);
 
-    @Query("SELECT t FROM LearningTopicEntity t WHERE t.module.id = :moduleId AND t.module.path.user.id = :userId")
+    @Query("SELECT t FROM LearningTopicEntity t WHERE t.module.id = :moduleId AND t.module.path.user.id = :userId order by t.updatedAt desc")
     List<LearningTopicEntity> findAllByModuleIdAndUserId(Long moduleId, Long userId);
 
     boolean existsByIdAndModulePathUserId(Long id, Long userId);

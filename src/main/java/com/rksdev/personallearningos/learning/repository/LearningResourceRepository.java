@@ -14,6 +14,6 @@ public interface LearningResourceRepository extends JpaRepository<LearningResour
     @Query("SELECT r FROM LearningResourceEntity r WHERE r.id = :id AND r.topic.module.path.user.id = :userId")
     Optional<LearningResourceEntity> findByIdAndUserId(Long id, Long userId);
 
-    @Query("SELECT r FROM LearningResourceEntity r WHERE r.topic.id = :topicId AND r.topic.module.path.user.id = :userId")
+    @Query("SELECT r FROM LearningResourceEntity r WHERE r.topic.id = :topicId AND r.topic.module.path.user.id = :userId order by r.updatedAt desc")
     List<LearningResourceEntity> findAllByTopicIdAndUserId(Long topicId, Long userId);
 }

@@ -55,7 +55,7 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	// custom jars
-	implementation 'com.rksdev:jwt-security:1.0.4'
+	implementation 'com.rksdev:jwt-security:1.0.5'
 
 	implementation 'org.jsoup:jsoup:1.17.2'
 

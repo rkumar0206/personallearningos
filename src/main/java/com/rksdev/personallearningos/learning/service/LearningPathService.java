@@ -1,7 +1,9 @@
 package com.rksdev.personallearningos.learning.service;
 
+import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
 import com.rksdev.personallearningos.learning.dtos.LearningPathRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningPathResponseDto;
+import com.rksdev.personallearningos.learning.util.CursorUtils;
 import com.rksdev.personallearningos.shared.exception.DuplicateResourceInDbException;
 import com.rksdev.personallearningos.shared.exception.ResourceNotFoundInDbException;
 import com.rksdev.personallearningos.learning.mapper.LearningPathMapper;
@@ -10,6 +12,7 @@ import com.rksdev.personallearningos.learning.repository.LearningPathRepository;
 import com.rksdev.personallearningos.user.model.UserEntity;
 import com.rksdev.personallearningos.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +51,44 @@ public class LearningPathService {
 
     public List<LearningPathResponseDto> getAllPathsForUser(Long userId) {
         return learningPathMapper.toResponseDtoList(learningPathRepository.findAllByUserId(userId));
+    }
+
+    public CursorPageResponse<LearningPathResponseDto> getLearningPaths(
+            Long userId,
+            String search,
+            String cursorToken,
+            int limit
+    ) {
+        // Decode cursor
+        CursorUtils.Cursor cursor = CursorUtils.decode(cursorToken);
+        var lastUpdatedAt = cursor != null ? cursor.updatedAt() : null;
+        var lastId = cursor != null ? cursor.id() : null;
+
+        // Clean search input
+        String cleanSearch = (search != null && !search.trim().isEmpty())
+                ? "%" + search.trim().toLowerCase() + "%"
+                : null;
+
+        // Fetch limit + 1 to check for hasNext
+        List<LearningPathEntity> results = learningPathRepository.findByUserIdWithCursorAndSearch(
+                userId,
+                cleanSearch,
+                lastUpdatedAt,
+                lastId,
+                PageRequest.of(0, limit + 1)
+        );
+
+        boolean hasNext = results.size() > limit;
+        List<LearningPathEntity> pageData = hasNext ? results.subList(0, limit) : results;
+
+        // Generate next cursor from last element on current page
+        String nextCursor = null;
+        if (hasNext && !pageData.isEmpty()) {
+            LearningPathEntity lastItem = pageData.getLast();
+            nextCursor = CursorUtils.encode(lastItem.getUpdatedAt(), lastItem.getId());
+        }
+
+        return new CursorPageResponse<>(learningPathMapper.toResponseDtoList(pageData), nextCursor, hasNext);
     }
 
     public LearningPathResponseDto getPathById(Long userId, Long pathId) {
