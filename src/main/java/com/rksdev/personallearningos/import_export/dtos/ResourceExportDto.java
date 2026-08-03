@@ -5,5 +5,6 @@ import com.rksdev.personallearningos.learning.model.enums.ResourceType;
 public record ResourceExportDto(
         ResourceType type,
         String urlDescription,
-        String content
+        String content,
+        String title
 ) {}

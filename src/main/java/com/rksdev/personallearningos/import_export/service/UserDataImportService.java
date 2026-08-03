@@ -1,6 +1,7 @@
 package com.rksdev.personallearningos.import_export.service;
 
 import com.rksdev.personallearningos.import_export.dtos.*;
+import com.rksdev.personallearningos.import_export.exception.ImportExportErrorException;
 import com.rksdev.personallearningos.learning.model.LearningModuleEntity;
 import com.rksdev.personallearningos.learning.model.LearningPathEntity;
 import com.rksdev.personallearningos.learning.model.LearningResourceEntity;
@@ -131,6 +132,7 @@ public class UserDataImportService {
                             } else {
                                 LearningResourceEntity resource = LearningResourceEntity.builder()
                                         .topic(topic)
+                                        .title(resourceDto.title())
                                         .type(resourceDto.type())
                                         .urlDescription(resourceDto.urlDescription() != null ? resourceDto.urlDescription() : "")
                                         .content(resourceDto.content())
@@ -151,10 +153,9 @@ public class UserDataImportService {
             emailService.sendImportSummaryEmail(email, summary);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            emailService.sendImportErrorEmail(email, e);
+            throw new ImportExportErrorException(e.getMessage(), e);
         }
-
-
     }
 
     /**

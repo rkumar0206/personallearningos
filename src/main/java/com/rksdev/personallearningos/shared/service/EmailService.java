@@ -153,4 +153,29 @@ public class EmailService {
             throw new RuntimeException("Failed to send import summary email", e);
         }
     }
+
+    public void sendImportErrorEmail(String toEmail, Exception exception) {
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("Your Data Import Has Completed");
+
+            String body = String.format("""
+                Hello,
+
+                Your data import process has failed due to below exception.\n
+                %s
+                """,
+                    exception.getMessage()
+            );
+
+            helper.setText(body);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send import error email", e);
+        }
+    }
 }

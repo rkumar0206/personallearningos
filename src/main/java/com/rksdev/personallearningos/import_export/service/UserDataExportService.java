@@ -48,7 +48,8 @@ public class UserDataExportService {
                                                                     new ResourceExportDto(
                                                                             resource.getType(),
                                                                             resource.getUrlDescription(),
-                                                                            resource.getContent()
+                                                                            resource.getContent(),
+                                                                            resource.getTitle()
                                                                     )
                                                             ).toList()
                                                     )
