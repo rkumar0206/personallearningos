@@ -1,5 +1,6 @@
 package com.rksdev.personallearningos.learning.service;
 
+import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
 import com.rksdev.personallearningos.learning.dtos.LearningTopicRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningTopicResponseDto;
 import com.rksdev.personallearningos.learning.mapper.LearningTopicMapper;
@@ -7,12 +8,17 @@ import com.rksdev.personallearningos.learning.model.LearningModuleEntity;
 import com.rksdev.personallearningos.learning.model.LearningTopicEntity;
 import com.rksdev.personallearningos.learning.repository.LearningModuleRepository;
 import com.rksdev.personallearningos.learning.repository.LearningTopicRepository;
+import com.rksdev.personallearningos.learning.util.CursorUtils;
 import com.rksdev.personallearningos.shared.exception.DuplicateResourceInDbException;
 import com.rksdev.personallearningos.shared.exception.ResourceNotFoundInDbException;
+import com.rksdev.personallearningos.shared.util.AppUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -50,6 +56,45 @@ public class LearningTopicService {
         return learningTopicMapper.toResponseDtoList(
                 learningTopicRepository.findAllByModuleIdAndUserId(moduleId, userId)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public CursorPageResponse<LearningTopicResponseDto> getPaginatedTopics(
+            Long moduleId,
+            Long userId,
+            String search,
+            String cursor,
+            int limit) {
+
+        Instant lastUpdatedAt = null;
+        Long lastId = null;
+
+        String searchPattern = AppUtils.getSearchStringWithPattern(search);
+
+        if (cursor != null && !cursor.isBlank()) {
+            CursorUtils.Cursor decoded = CursorUtils.decode(cursor);
+            lastUpdatedAt = decoded.updatedAt();
+            lastId = decoded.id();
+        }
+
+        // 3. Request limit + 1 to check for availability of a next page
+        Pageable pageable = PageRequest.of(0, limit + 1);
+
+        List<LearningTopicEntity> topics = learningTopicRepository.findPaginatedTopics(
+                moduleId, userId, searchPattern, lastUpdatedAt, lastId, pageable
+        );
+
+        // 4. Determine pagination metadata
+        boolean hasNext = topics.size() > limit;
+        List<LearningTopicEntity> resultList = hasNext ? topics.subList(0, limit) : topics;
+
+        String nextCursor = null;
+        if (hasNext && !resultList.isEmpty()) {
+            LearningTopicEntity lastItem = resultList.getLast();
+            nextCursor = CursorUtils.encode(lastItem.getUpdatedAt(), lastItem.getId());
+        }
+
+        return new CursorPageResponse<>(learningTopicMapper.toResponseDtoList(resultList), nextCursor, hasNext);
     }
 
     public LearningTopicResponseDto getTopicById(Long userId, Long topicId) {

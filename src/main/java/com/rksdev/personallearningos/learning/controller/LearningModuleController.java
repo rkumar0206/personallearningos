@@ -1,5 +1,6 @@
 package com.rksdev.personallearningos.learning.controller;
 
+import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
 import com.rksdev.personallearningos.learning.dtos.LearningModuleRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningModuleResponseDto;
 import com.rksdev.personallearningos.learning.service.LearningModuleService;
@@ -8,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,11 +31,24 @@ public class LearningModuleController {
     }
 
     @GetMapping("/path/{pathId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<LearningModuleResponseDto>> getAllModulesForPath(
             @CurrentUserId Long userId,
             @PathVariable Long pathId) {
         return ResponseEntity.ok(learningModuleService.getAllModulesForPath(userId, pathId));
     }
+
+    @GetMapping("/paginated/path/{pathId}")
+    public ResponseEntity<CursorPageResponse<LearningModuleResponseDto>> getAllModulesForPath(
+            @CurrentUserId Long userId,
+            @PathVariable Long pathId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        return ResponseEntity.ok(learningModuleService.getPaginatedModules(pathId, userId, search, cursor, limit));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<LearningModuleResponseDto> getModuleById(

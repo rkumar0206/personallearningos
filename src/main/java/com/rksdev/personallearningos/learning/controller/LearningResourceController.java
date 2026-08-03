@@ -1,5 +1,6 @@
 package com.rksdev.personallearningos.learning.controller;
 
+import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
 import com.rksdev.personallearningos.learning.dtos.LearningResourceRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningResourceResponseDto;
 import com.rksdev.personallearningos.learning.service.LearningResourceService;
@@ -33,6 +34,19 @@ public class LearningResourceController {
             @CurrentUserId Long userId,
             @PathVariable Long topicId) {
         return ResponseEntity.ok(learningResourceService.getAllResourcesForTopic(userId, topicId));
+    }
+
+    @GetMapping("/paginated/topic/{topicId}")
+    public ResponseEntity<CursorPageResponse<LearningResourceResponseDto>> getAllResourcesForTopic(
+            @CurrentUserId Long userId,
+            @PathVariable Long topicId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        return ResponseEntity.ok(
+                learningResourceService.getPaginatedResources(topicId, userId, search, cursor, limit)
+        );
     }
 
     @GetMapping("/{id}")
