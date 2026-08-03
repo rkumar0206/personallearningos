@@ -9,4 +9,10 @@ public class AppUtils {
                 .build()
                 .toUriString(); // Returns something like "http://localhost:2266" or "https://api.mydomain.com"
     }
+
+    public static String getSearchStringWithPattern(String search) {
+        return (search != null && !search.trim().isEmpty())
+                ? "%" + search.trim().toLowerCase() + "%"
+                : null;
+    }
 }

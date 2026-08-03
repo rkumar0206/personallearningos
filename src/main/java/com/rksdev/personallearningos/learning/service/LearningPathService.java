@@ -9,6 +9,7 @@ import com.rksdev.personallearningos.shared.exception.ResourceNotFoundInDbExcept
 import com.rksdev.personallearningos.learning.mapper.LearningPathMapper;
 import com.rksdev.personallearningos.learning.model.LearningPathEntity;
 import com.rksdev.personallearningos.learning.repository.LearningPathRepository;
+import com.rksdev.personallearningos.shared.util.AppUtils;
 import com.rksdev.personallearningos.user.model.UserEntity;
 import com.rksdev.personallearningos.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,9 +66,7 @@ public class LearningPathService {
         var lastId = cursor != null ? cursor.id() : null;
 
         // Clean search input
-        String cleanSearch = (search != null && !search.trim().isEmpty())
-                ? "%" + search.trim().toLowerCase() + "%"
-                : null;
+        String cleanSearch = AppUtils.getSearchStringWithPattern(search);
 
         // Fetch limit + 1 to check for hasNext
         List<LearningPathEntity> results = learningPathRepository.findByUserIdWithCursorAndSearch(

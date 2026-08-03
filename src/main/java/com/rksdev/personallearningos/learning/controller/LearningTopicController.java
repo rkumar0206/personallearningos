@@ -1,5 +1,7 @@
 package com.rksdev.personallearningos.learning.controller;
 
+import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
+import com.rksdev.personallearningos.learning.dtos.LearningModuleResponseDto;
 import com.rksdev.personallearningos.learning.dtos.LearningTopicRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningTopicResponseDto;
 import com.rksdev.personallearningos.learning.service.LearningTopicService;
@@ -33,6 +35,17 @@ public class LearningTopicController {
             @CurrentUserId Long userId,
             @PathVariable Long moduleId) {
         return ResponseEntity.ok(learningTopicService.getAllTopicsForModule(userId, moduleId));
+    }
+
+    @GetMapping("/paginated/module/{moduleId}")
+    public ResponseEntity<CursorPageResponse<LearningTopicResponseDto>> getAllTopicsForModule(
+            @CurrentUserId Long userId,
+            @PathVariable Long moduleId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        return ResponseEntity.ok(learningTopicService.getPaginatedTopics(moduleId, userId, search, cursor, limit));
     }
 
     @GetMapping("/{id}")

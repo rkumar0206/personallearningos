@@ -11,6 +11,7 @@ import com.rksdev.personallearningos.learning.repository.LearningPathRepository;
 import com.rksdev.personallearningos.learning.util.CursorUtils;
 import com.rksdev.personallearningos.shared.exception.DuplicateResourceInDbException;
 import com.rksdev.personallearningos.shared.exception.ResourceNotFoundInDbException;
+import com.rksdev.personallearningos.shared.util.AppUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -66,9 +67,7 @@ public class LearningModuleService {
             int limit
     ) {
         // 1. Format search pattern safely in Java to prevent JDBC type-casting issues
-        String searchPattern = (search != null && !search.trim().isEmpty())
-                ? "%" + search.trim().toLowerCase() + "%"
-                : null;
+        String searchPattern = AppUtils.getSearchStringWithPattern(search);
 
         // 2. Decode cursor (e.g. encoded ISO-8601 Instant + ID)
         Instant lastUpdatedAt = null;
