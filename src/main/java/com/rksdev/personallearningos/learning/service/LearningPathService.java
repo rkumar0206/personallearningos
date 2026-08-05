@@ -115,6 +115,42 @@ public class LearningPathService {
         });
     }
 
+    public CursorPageResponse<LearningPathResponseDto> getLearningPaths(
+            Long userId,
+            String search,
+            String cursorToken,
+            int limit
+    ) {
+        // Decode cursor
+        CursorUtils.Cursor cursor = CursorUtils.decode(cursorToken);
+        var lastUpdatedAt = cursor != null ? cursor.updatedAt() : null;
+        var lastId = cursor != null ? cursor.id() : null;
+
+        // Clean search input
+        String cleanSearch = AppUtils.getSearchStringWithPattern(search);
+
+        // Fetch limit + 1 to check for hasNext
+        List<LearningPathEntity> results = learningPathRepository.findByUserIdWithCursorAndSearch(
+                userId,
+                cleanSearch,
+                lastUpdatedAt,
+                lastId,
+                PageRequest.of(0, limit + 1)
+        );
+
+        boolean hasNext = results.size() > limit;
+        List<LearningPathEntity> pageData = hasNext ? results.subList(0, limit) : results;
+
+        // Generate next cursor from last element on current page
+        String nextCursor = null;
+        if (hasNext && !pageData.isEmpty()) {
+            LearningPathEntity lastItem = pageData.getLast();
+            nextCursor = CursorUtils.encode(lastItem.getUpdatedAt(), lastItem.getId());
+        }
+
+        return new CursorPageResponse<>(learningPathMapper.toResponseDtoList(pageData), nextCursor, hasNext);
+    }
+
     public LearningPathResponseDto getPathById(Long userId, Long pathId) {
         return learningPathRepository.findByIdAndUserId(pathId, userId)
                 .map(learningPathMapper::toResponseDto)
