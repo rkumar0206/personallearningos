@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.yt.service.name }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    app: plo
+    component: plo-yt-transcript
+spec:
+  type: {{ .Values.yt.service.type | default "ClusterIP" }}
+  selector:
+    app: plo
+    component: plo-backend
+  ports:
+    - name: http
+      port: {{ .Values.yt.service.port | default 8000 }}
+      targetPort: {{ .Values.yt.service.targetPort | default 8000 }}
+      protocol: TCP

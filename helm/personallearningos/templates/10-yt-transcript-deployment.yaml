@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  name: plo-yt-transcript-deployment
+  labels:
+    app: plo
+    component: plo-yt-transcript
+spec:
+  replicas: {{ .Values.yt.replicaCount }}
+  selector:
+    matchLabels:
+      app: plo
+      component: plo-yt-transcript
+  template:
+    metadata:
+      labels:
+        app: plo
+        component: plo-yt-transcript
+    spec:
+      containers:
+        - name: {{ .Values.yt.name }}
+          image: "{{ .Values.yt.image.repository }}:{{ .Values.yt.image.tag }}"
+          imagePullPolicy: {{ .Values.yt.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.yt.image.containerPort }}
+          envFrom:
+            - configMapRef:
+                name: plo-backend-config
+            - secretRef:
+                name: {{ .Values.app.existingSecret }}
+          resources:
+            requests:
+              cpu: {{ .Values.yt.resources.requests.cpu }}
+              memory: {{ .Values.yt.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.yt.resources.limits.cpu }}
+              memory: {{ .Values.yt.resources.limits.memory }}
