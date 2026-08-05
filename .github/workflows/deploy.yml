@@ -3,6 +3,9 @@ name: Build and Deploy Backend
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/deploy.yml'
 
 # 🔑 Grants write permissions to GHCR
 permissions:

@@ -127,4 +127,8 @@ public class LearningModuleService {
 
         learningModuleRepository.delete(existingModule);
     }
+
+    public Long getModuleCountByPathId(Long userId, Long pathId) {
+        return learningModuleRepository.countByUserIdAndPathId(userId, pathId);
+    }
 }

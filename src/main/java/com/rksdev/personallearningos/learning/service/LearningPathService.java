@@ -3,12 +3,14 @@ package com.rksdev.personallearningos.learning.service;
 import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
 import com.rksdev.personallearningos.learning.dtos.LearningPathRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningPathResponseDto;
+import com.rksdev.personallearningos.learning.dtos.PathModuleCountDto;
+import com.rksdev.personallearningos.learning.mapper.LearningPathMapper;
+import com.rksdev.personallearningos.learning.model.LearningPathEntity;
+import com.rksdev.personallearningos.learning.repository.LearningModuleRepository;
+import com.rksdev.personallearningos.learning.repository.LearningPathRepository;
 import com.rksdev.personallearningos.learning.util.CursorUtils;
 import com.rksdev.personallearningos.shared.exception.DuplicateResourceInDbException;
 import com.rksdev.personallearningos.shared.exception.ResourceNotFoundInDbException;
-import com.rksdev.personallearningos.learning.mapper.LearningPathMapper;
-import com.rksdev.personallearningos.learning.model.LearningPathEntity;
-import com.rksdev.personallearningos.learning.repository.LearningPathRepository;
 import com.rksdev.personallearningos.shared.util.AppUtils;
 import com.rksdev.personallearningos.user.model.UserEntity;
 import com.rksdev.personallearningos.user.repository.UserRepository;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,6 +29,7 @@ import java.util.List;
 public class LearningPathService {
 
     private final LearningPathRepository learningPathRepository;
+    private final LearningModuleRepository learningModuleRepository;
     private final UserRepository userRepository;
     private final LearningPathMapper learningPathMapper;
 
@@ -51,7 +56,9 @@ public class LearningPathService {
     }
 
     public List<LearningPathResponseDto> getAllPathsForUser(Long userId) {
-        return learningPathMapper.toResponseDtoList(learningPathRepository.findAllByUserId(userId));
+        List<LearningPathResponseDto> responseDtoList = learningPathMapper.toResponseDtoList(learningPathRepository.findAllByUserId(userId));
+        addModuleCountToResponseDtoList(responseDtoList, userId);
+        return responseDtoList;
     }
 
     public CursorPageResponse<LearningPathResponseDto> getLearningPaths(
@@ -87,7 +94,25 @@ public class LearningPathService {
             nextCursor = CursorUtils.encode(lastItem.getUpdatedAt(), lastItem.getId());
         }
 
-        return new CursorPageResponse<>(learningPathMapper.toResponseDtoList(pageData), nextCursor, hasNext);
+        List<LearningPathResponseDto> responseDtoList = learningPathMapper.toResponseDtoList(pageData);
+
+        addModuleCountToResponseDtoList(responseDtoList, userId);
+
+        return new CursorPageResponse<>(responseDtoList, nextCursor, hasNext);
+    }
+
+    private void addModuleCountToResponseDtoList(List<LearningPathResponseDto> responseDtoList, Long userId) {
+
+        List<Long> pathIds = responseDtoList.stream().map(LearningPathResponseDto::getId).toList();
+        Map<Long, Long> countMap = learningModuleRepository.countModulesByPathIdsDto(pathIds, userId)
+                .stream().collect(Collectors.toMap(
+                        PathModuleCountDto::pathId,
+                        PathModuleCountDto::count
+                ));
+
+        responseDtoList.forEach(responseDto -> {
+            responseDto.setModulesCount(countMap.get(responseDto.getId()));
+        });
     }
 
     public LearningPathResponseDto getPathById(Long userId, Long pathId) {

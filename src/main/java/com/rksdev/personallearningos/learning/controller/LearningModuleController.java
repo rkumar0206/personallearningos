@@ -49,6 +49,14 @@ public class LearningModuleController {
         return ResponseEntity.ok(learningModuleService.getPaginatedModules(pathId, userId, search, cursor, limit));
     }
 
+    @GetMapping("/count/path/{pathId}")
+    public ResponseEntity<Long> getModulesCountByPathId(
+            @CurrentUserId Long userId,
+            @PathVariable Long pathId
+    ) {
+        return ResponseEntity.ok(learningModuleService.getModuleCountByPathId(userId, pathId));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<LearningModuleResponseDto> getModuleById(

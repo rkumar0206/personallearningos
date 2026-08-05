@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class LearningResourceController {
     }
 
     @GetMapping("/topic/{topicId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<LearningResourceResponseDto>> getAllResourcesForTopic(
             @CurrentUserId Long userId,
             @PathVariable Long topicId) {
