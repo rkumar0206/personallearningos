@@ -1,7 +1,6 @@
 package com.rksdev.personallearningos.learning.controller;
 
 import com.rksdev.personallearningos.learning.dtos.CursorPageResponse;
-import com.rksdev.personallearningos.learning.dtos.LearningModuleResponseDto;
 import com.rksdev.personallearningos.learning.dtos.LearningTopicRequestDto;
 import com.rksdev.personallearningos.learning.dtos.LearningTopicResponseDto;
 import com.rksdev.personallearningos.learning.service.LearningTopicService;
@@ -10,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +31,7 @@ public class LearningTopicController {
     }
 
     @GetMapping("/module/{moduleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<LearningTopicResponseDto>> getAllTopicsForModule(
             @CurrentUserId Long userId,
             @PathVariable Long moduleId) {

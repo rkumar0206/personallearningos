@@ -1,5 +1,6 @@
 package com.rksdev.personallearningos.learning.repository;
 
+import com.rksdev.personallearningos.learning.dtos.PathModuleCountDto;
 import com.rksdev.personallearningos.learning.model.LearningModuleEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,4 +47,15 @@ public interface LearningModuleRepository extends JpaRepository<LearningModuleEn
     Optional<LearningModuleEntity> findByTitleAndPathId(String title, Long pathId);
 
     boolean existsByIdAndPathUserId(Long id, Long userId);
+
+    @Query("SELECT COUNT(*) FROM LearningModuleEntity lm where lm.path.id = :pathId and lm.path.user.id = :userId")
+    Long countByUserIdAndPathId(Long userId, Long pathId);
+
+    @Query("""
+            SELECT new com.rksdev.personallearningos.learning.dtos.PathModuleCountDto(lm.path.id, COUNT(lm))
+                        FROM LearningModuleEntity lm
+                        WHERE lm.path.id IN :pathIds AND lm.path.user.id = :userId
+                        GROUP BY lm.path.id
+            """)
+    List<PathModuleCountDto> countModulesByPathIdsDto(@Param("pathIds") Collection<Long> pathIds, @Param("userId") Long userId);
 }

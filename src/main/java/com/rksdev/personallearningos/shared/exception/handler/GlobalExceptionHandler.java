@@ -1,5 +1,6 @@
 package com.rksdev.personallearningos.shared.exception.handler;
 
+import com.rksdev.personallearningos.shared.exception.BadRequestBodyException;
 import com.rksdev.personallearningos.shared.exception.DuplicateResourceInDbException;
 import com.rksdev.personallearningos.shared.exception.ResourceAccessException;
 import com.rksdev.personallearningos.shared.exception.ResourceNotFoundInDbException;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,6 +34,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleResourceNotFoundInDbException(ResourceNotFoundInDbException ex) {
         return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST));
     }
+
+    @ExceptionHandler(BadRequestBodyException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestBodyException(BadRequestBodyException ex) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST));
+    }
+
 
     @ExceptionHandler(ResourceAccessException.class)
     public ResponseEntity<ErrorResponse> handleResourceAccessExceptionException(ResourceAccessException ex) {
@@ -64,6 +72,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("Authentication failed.", HttpStatus.UNAUTHORIZED));
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("Authentication failed.", HttpStatus.UNAUTHORIZED));
     }

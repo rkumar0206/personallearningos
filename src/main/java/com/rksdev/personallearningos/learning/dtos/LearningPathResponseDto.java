@@ -26,6 +26,8 @@ public class LearningPathResponseDto {
     @NotNull(message = "Status cannot be null")
     private PathStatus status;
 
+    private Long modulesCount;
+
     @NotNull(message = "User ID cannot be null")
     private Long userId;
 

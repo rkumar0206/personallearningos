@@ -22,3 +22,7 @@ data:
   JWT_ENABLED: {{ .Values.app.jwt.enabled | quote }}
   JWT_ACCESS_TOKEN_EXPIRATION: {{ .Values.app.jwt.accessTokenExpirationMillis | quote }}
   JWT_REFRESH_TOKEN_EXPIRATION: {{ .Values.app.jwt.refreshTokenExpirationMillis | quote }}
+
+  # YT transcript AI topic and resource generator
+  YT_TRANSCRIPT_SERVICE_BASE_URL: "http://{{ .Values.yt.service.name }}:{{ .Values.yt.service.port }}"
+  MODEL: {{ .Values.yt.ai.gemini.model | quote }}

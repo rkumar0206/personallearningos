@@ -57,6 +57,19 @@ services:
     networks:
       - app-net
 
+  youtube-transcript-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 'rkumar0206/youtube-transcript-service:0.0.2'
+    env_file:
+      - .env
+    ports:
+      - '2267:8000'
+    container_name: youtube-transcript-service
+    networks:
+      - app-net
+
 networks:
   app-net:
     external: true

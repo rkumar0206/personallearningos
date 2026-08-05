@@ -108,3 +108,31 @@ ingress:
   tls:
     enabled: true
     secretName: plo-tls-secret
+
+yt:
+  name: yt-transcript
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/rkumar0206/yt-transcript-ai-resource-generator
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    containerPort: 8000
+
+  ai:
+    gemini:
+      model: google:gemini-3.1-flash-lite
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+  service:
+    name: plo-yt-transcript-service
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000

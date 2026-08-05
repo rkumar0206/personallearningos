@@ -5,3 +5,7 @@ target
 .idea
 *.log
 k8s/.env
+docker
+docker/.env
+docker/.env.*
+.github
