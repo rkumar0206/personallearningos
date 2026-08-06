@@ -113,6 +113,8 @@ yt:
   name: yt-transcript
   replicaCount: 1
 
+  provider: supadata # supadata or youtube
+
   image:
     repository: ghcr.io/rkumar0206/yt-transcript-ai-resource-generator
     tag: "latest"

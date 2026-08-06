@@ -26,3 +26,4 @@ data:
   # YT transcript AI topic and resource generator
   YT_TRANSCRIPT_SERVICE_BASE_URL: "http://{{ .Values.yt.service.name }}:{{ .Values.yt.service.port }}"
   MODEL: {{ .Values.yt.ai.gemini.model | quote }}
+  TRANSCRIPT_PROVIDER: {{ .Values.yt.provider | quote }}

@@ -12,6 +12,8 @@ import org.springframework.web.client.RestClient;
 public class YoutubeAiService {
 
     private final RestClient restClient;
+    @Value("${ai-service.youtube.transcriptProvider}")
+    private String  transcriptProvider;
 
     public YoutubeAiService(@Value("${ai-service.youtube.base-url}") String baseUrl) {
         this.restClient = RestClient.builder()
@@ -27,6 +29,7 @@ public class YoutubeAiService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/v1/generate/module")
                         .queryParam("include_raw_transcript", includeRawTranscript)
+                        .queryParam("provider", transcriptProvider)
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
@@ -42,6 +45,7 @@ public class YoutubeAiService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/v1/generate/topic")
                         .queryParam("include_raw_transcript", includeRawTranscript)
+                        .queryParam("provider", transcriptProvider)
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
