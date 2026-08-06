@@ -10,7 +10,7 @@ spec:
   type: {{ .Values.yt.service.type | default "ClusterIP" }}
   selector:
     app: plo
-    component: plo-backend
+    component: plo-yt-transcript
   ports:
     - name: http
       port: {{ .Values.yt.service.port | default 8000 }}

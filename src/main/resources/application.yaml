@@ -20,3 +20,4 @@ management:
 ai-service:
   youtube:
     base-url: ${YT_TRANSCRIPT_SERVICE_BASE_URL:http://localhost:8000}
+    transcriptProvider: ${TRANSCRIPT_PROVIDER:youtube}
