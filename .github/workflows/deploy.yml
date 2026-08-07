@@ -122,6 +122,7 @@ jobs:
             --from-literal=SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}" \
             --from-literal=SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}" \
             --from-literal=GOOGLE_API_KEY="${{ secrets.GOOGLE_API_KEY }}" \
+            --from-literal=SUPADATA_API_KEY="${{ secrets.SUPADATA_API_KEY }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       # ------------------------------------------------------------------------
