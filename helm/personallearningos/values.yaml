@@ -118,7 +118,7 @@ yt:
   image:
     repository: ghcr.io/rkumar0206/yt-transcript-ai-resource-generator
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     containerPort: 8000
 
   ai:
